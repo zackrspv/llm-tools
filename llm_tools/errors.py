@@ -11,7 +11,6 @@ from tenacity.wait import wait_base
 from typing import Any, Callable, Tuple, Optional, List
 import logging
 import openai
-import openai.error
 import aiohttp
 import aiohttp.client_exceptions
 import asyncio
@@ -45,7 +44,7 @@ class ModelContextSizeExceededError(Exception):
     @classmethod
     def from_openai_error(
         cls,
-        error: openai.error.InvalidRequestError,
+        error: openai.InvalidRequestError,
         model_name: str,
         during_streaming: bool = False,
     ) -> "ModelContextSizeExceededError":
@@ -97,11 +96,11 @@ CONTEXT_LENGTH_EXCEEDED_ERROR_CODE = "context_length_exceeded"
 
 def should_retry_initital_openai_request_error(error: Exception) -> bool:
     OPENAI_REQUEST_ERRORS = (
-        openai.error.Timeout,
-        openai.error.APIError,
-        openai.error.APIConnectionError,
-        openai.error.RateLimitError,
-        openai.error.ServiceUnavailableError,
+        openai.TimeoutError,
+        openai.APIError,
+        openai.APIConnectionError,
+        openai.RateLimitError,
+        openai.ServiceUnavailableError,
         OpenAIRequestTimeoutError,
     )
     return isinstance(error, OPENAI_REQUEST_ERRORS)
@@ -119,7 +118,7 @@ def should_fallback_to_other_model(error: Exception) -> bool:
     if isinstance(error, ModelContextSizeExceededError):
         return False
     
-    if isinstance(error, openai.error.InvalidRequestError) and error.code == CONTEXT_LENGTH_EXCEEDED_ERROR_CODE:
+    if isinstance(error, openai.InvalidRequestError) and error.code == CONTEXT_LENGTH_EXCEEDED_ERROR_CODE:
         return False
     
     return True
