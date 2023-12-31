@@ -18,7 +18,6 @@ from langchain.schema import BaseMessage
 from langchain.chat_models.openai import _convert_dict_to_message
 import tiktoken
 import openai
-import openai.error
 
 from concurrent.futures import Executor
 from functools import partial
@@ -163,7 +162,7 @@ class StreamingOpenAIChatModel(StreamingLLMBase):
                             self.chat_model.client.acreate(messages=self.message_dicts, **params),
                             timeout=timeout,
                         )
-                    except openai.error.InvalidRequestError as e:
+                    except openai.InvalidRequestError as e:
                         if e.code == CONTEXT_LENGTH_EXCEEDED_ERROR_CODE:
                             raise ModelContextSizeExceededError.from_openai_error(
                                 model_name=self.chat_model.model_name,
