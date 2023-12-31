@@ -162,7 +162,7 @@ class StreamingOpenAIChatModel(StreamingLLMBase):
                             self.chat_model.client.acreate(messages=self.message_dicts, **params),
                             timeout=timeout,
                         )
-                    except openai.InvalidRequestError as e:
+                    except openai.BadRequestError as e:
                         if e.code == CONTEXT_LENGTH_EXCEEDED_ERROR_CODE:
                             raise ModelContextSizeExceededError.from_openai_error(
                                 model_name=self.chat_model.model_name,
