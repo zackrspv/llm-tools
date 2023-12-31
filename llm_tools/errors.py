@@ -96,11 +96,11 @@ CONTEXT_LENGTH_EXCEEDED_ERROR_CODE = "context_length_exceeded"
 
 def should_retry_initital_openai_request_error(error: Exception) -> bool:
     OPENAI_REQUEST_ERRORS = (
-        openai.TimeoutError,
+        openai.APITimeoutError,
         openai.APIError,
         openai.APIConnectionError,
         openai.RateLimitError,
-        openai.ServiceUnavailableError,
+        openai.InternalServerError,
         OpenAIRequestTimeoutError,
     )
     return isinstance(error, OPENAI_REQUEST_ERRORS)
