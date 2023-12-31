@@ -44,7 +44,7 @@ class ModelContextSizeExceededError(Exception):
     @classmethod
     def from_openai_error(
         cls,
-        error: openai.InvalidRequestError,
+        error: openai.BadRequestError,
         model_name: str,
         during_streaming: bool = False,
     ) -> "ModelContextSizeExceededError":
